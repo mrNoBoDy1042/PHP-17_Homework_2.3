@@ -10,4 +10,4 @@ foreach (glob("Tests/*.json") as $file) {
   <!-- Создаем ссылку для прохождения этого теста -->
   <a href="test.php?t=<?echo $file?>"><?echo $file?></a><br>
   <?}?>
-<a href="admin.html">Загрузить тест</a>
+<a href="admin.php">Загрузить тест</a>

@@ -25,5 +25,6 @@ function check_test()
 
 $path_to_test = check_test();
 require_once('funcs_for_test.php');
-build_test($path_to_test);
+list($name, $points) = build_test($path_to_test);
+create_diploma($name, $points);
 ?>

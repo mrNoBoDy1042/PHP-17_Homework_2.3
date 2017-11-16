@@ -33,36 +33,39 @@ function build_test($path){
     <!-- Ссылка для возврата к списку тестов -->
     <a href="list.php">Перейти к списку тестов</a><br>
 <?
-  check_answers($count_questions, $json);
+   return check_answers($count_questions, $json);
 }?>
 
 <?function create_diploma($name, $points)
 {
-  $points = "5";
-  $text = "Поздравляем, $name".PHP_EOL."Ваши баллы:".strval($points);
-  $image = imagecreatetruecolor(250,250);
-  $backcolor = imagecolorallocate($image, 255, 224, 221);
-  $textcolor = imagecolorallocate($image, 129, 15, 90);
+  if(!empty($name) && !empty($points)){
+    //require_once('Redirect.php');
+    $text = "Поздравляем, $name".PHP_EOL."Ваши баллы:".strval($points);
+    $image = imagecreatetruecolor(250,250);
+    $backcolor = imagecolorallocate($image, 255, 224, 221);
+    $textcolor = imagecolorallocate($image, 129, 15, 90);
 
-  $fontFile = __DIR__.'/assets/font.ttf';
+    $fontFile = __DIR__.'/assets/font.ttf';
 
-  if (!file_exists($fontFile)){
-    echo "Файл шрифта не найден";
-    exit;
+    if (!file_exists($fontFile)){
+      echo "Файл шрифта не найден";
+      exit;
+    }
+    $imBox = imagecreatefrompng(__DIR__.'/assets/trophy.png');
+
+    imagefill($image, 0, 0, $backcolor);
+    imagecopy($image, $imBox, 50, 50, 0, 0, 120, 120);
+    imagettftext($image, 18, 0, 15, 100, $textcolor, $fontFile, $text);
+    //redirect('Content-Type: image/png');
+
+    //Вывод картинки в теле страницы вместо отправки через заголовок
+    $cert = 'cert.png';
+    imagepng($image, $cert);
+    echo "<img src=$cert align=middle>";
+    //unlink($cert);
+    imagedestroy($image);
   }
-  $imBox = imagecreatefrompng(__DIR__.'/assets/trophy.png');
-
-  imagefill($image, 0, 0, $backcolor);
-  imagecopy($image, $imBox, 50, 50, 0, 0, 120, 120);
-  imagettftext($image, 18, 0, 15, 100, $textcolor, $fontFile, $text);
-  //header('Content-Type: image/png');
-  $cert = 'cert.png';
-  imagepng($image, $cert);
-  echo "<img src=$cert align=middle>";
-  //unlink($cert);
-  imagedestroy($image);
 }
-
 
 function check_answers($count_questions, $json)
 {
@@ -88,13 +91,14 @@ function check_answers($count_questions, $json)
        if ($json[$question]['correct'] == $answer) $point += 1;
         // Говорим пользователю его результат
     }
-    echo "$point<br>";
-    create_diploma($username, $point);
+    //echo "$point<br>";
   }
   // Если есть пустые поля - говорим об этом пользователю
   else
     {
       echo "<script>alert('Необходимо заполнить все поля')</script>";
     }
+
+    return array($username, $point);
 }
 ?>
