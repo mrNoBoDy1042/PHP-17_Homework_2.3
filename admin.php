@@ -5,7 +5,7 @@ if(isset($_FILES['userfile'])){
   $file = $_FILES['userfile'];
   $path = $file['name'];
   // Если файл JSON, то сохраняем его в папку с тестами
-  if(substr($file['name'], -5) == '.json'){
+  if(pathinfo($file['name'])['extension'] === 'json'){
     if (move_uploaded_file($file['tmp_name'], "Tests/".$path))
     {
       // После успешной загрузки файла перенаправляем на список тестов
