@@ -31,7 +31,7 @@ function build_test($path)
     return check_answers($count_questions, $json);
 }
 
-function create_diploma($name, $points)
+function create_diploma($name, $points, $test)
 {
     if (!empty($name) && !empty($points)) {
         //require_once('Redirect.php');
@@ -51,14 +51,22 @@ function create_diploma($name, $points)
         imagefill($image, 0, 0, $backcolor);
         imagecopy($image, $imBox, 50, 50, 0, 0, 120, 120);
         imagettftext($image, 18, 0, 15, 100, $textcolor, $fontFile, $text);
-        imagepng($image, 'cert.png');
-        header('Content-Type: image/png');
-        // Вывод картинки в теле страницы вместо отправки через заголовок
-        imagepng($image);
-        imagedestroy($image);
+        imagejpeg($image, 'cert.jpeg');
+        header('Location: test.php?t='.$test);
+
     }
 }
-
+function send_diploma()
+{
+  if (file_exists('cert.jpeg')){
+    header('Content-Type: image/jpeg');
+    // Вывод картинки в теле страницы вместо отправки через заголовок
+    readfile('cert.jpeg');
+    //imagepng('cert.jpeg');
+    //imagedestroy('cert.jpeg');
+    unlink('cert.jpeg');
+  }
+}
 function check_answers($count_questions, $json)
 {
     /* Обработка ответов */
